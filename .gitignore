@@ -160,9 +160,6 @@ cython_debug/
 .idea/
 .idea/*
 
-# makefile for personal usage
-**/Makefile
-
 # ruff cache
 **/ruff_cache/
 
