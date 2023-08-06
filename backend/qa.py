@@ -16,7 +16,7 @@ connection.recreate_collection(
 )
 
 
-def vectorize_url_content(url):
+def vectorize_url_content(url: str):
     parsed_content = parse_content_for_given_url(url)
     chunks = get_text_chunks(parsed_content)
     points = get_embedding(chunks)
@@ -24,7 +24,7 @@ def vectorize_url_content(url):
 
 
 # parse text into chunks
-def get_text_chunks(text):
+def get_text_chunks(text: str) -> list[str]:
     text_splitter = CharacterTextSplitter(
         separator="/n",
         chunk_size=1000,
@@ -36,7 +36,7 @@ def get_text_chunks(text):
 
 
 # convert chunks into embeddings
-def get_embedding(text_chunks, model_id="text-embedding-ada-002"):
+def get_embedding(text_chunks: list[str], model_id: str = "text-embedding-ada-002") -> list[PointStruct]:
     points = []
     for chunk in text_chunks:
         response = openai.Embedding.create(input=chunk, model=model_id)
@@ -47,12 +47,12 @@ def get_embedding(text_chunks, model_id="text-embedding-ada-002"):
 
 
 # data insertion to qdrant db
-def insert_data(points):
+def insert_data(points: list[PointStruct]):
     connection.upsert(collection_name=COLLECTION_NAME, wait=True, points=points)
 
 
 # searching and answering
-def compose_answer(question):
+def compose_answer(question: str) -> str:
     response = openai.Embedding.create(input=question, model="text-embedding-ada-002")
     embeddings = response["data"][0]["embedding"]
     search_result = connection.search(collection_name=COLLECTION_NAME, query_vector=embeddings, limit=1)
