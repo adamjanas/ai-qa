@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def parse_content_for_given_url(base_url):
+def parse_content_for_given_url(base_url: str) -> str:
     related_urls = get_urls(base_url)
     if related_urls:
         whole_content = ""
@@ -16,7 +16,7 @@ def parse_content_for_given_url(base_url):
         return whole_content
 
 
-def scrape_content(url):
+def scrape_content(url: str) -> str | None:
     response = requests.get(url)
     if response.status_code == HTTPStatus.OK:
         soup = BeautifulSoup(response.content, "html.parser")
@@ -26,7 +26,7 @@ def scrape_content(url):
     return
 
 
-def get_urls(base_url):
+def get_urls(base_url: str) -> set[str]:
     response = requests.get(base_url)
     soup = BeautifulSoup(response.content, "html.parser")
     urls = {base_url}
